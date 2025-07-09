@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MPIN Strength Checker</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {
+  margin: 0;
+  padding: 0;
+  background: #fffde7;
+  font-family: 'Segoe UI', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.container {
+  background: #fff9c4;
+  padding: 35px 30px;
+  border-radius: 20px;
+  max-width: 480px;
+  width: 100%;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  border: 2px solid #fce28b;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #5c4300;
+}
+
+form {
+  display: grid;
+  gap: 15px;
+}
+
+label {
+  color: #4a3b00;
+  font-weight: 500;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #e2c04b;
+  background-color: #fffbe6;
+  font-size: 16px;
+}
+
+button {
+  padding: 12px;
+  background-color: #fbc02d;
+  color: #000;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background-color: #f9a825;
+  color: white;
+}
+
+.result-box {
+  margin-top: 20px;
+  background: #fff8c6;
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #f5e17c;
+  color: #3c3c00;
+}
+
+.badge {
+  padding: 4px 10px;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  color: white;
+}
+
+.badge.strong {
+  background-color: #388e3c;
+}
+
+.badge.weak {
+  background-color: #d32f2f;
+}
+
+ul {
+  margin-top: 10px;
+  padding-left: 1.2rem;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+<h2> MPIN Strength Checker</h2>
+
+<form method="POST">
+<label>Enter MPIN (4 or 6 digits)</label>
+<input type="text" name="pin" pattern="\d{4}|\d{6}" required>
+
+<label>Your DOB (DDMMYYYY)</label>
+<input type="text" name="dob" pattern="\d{8}" placeholder="Optional">
+
+<label>Spouse DOB (DDMMYYYY)</label>
+<input type="text" name="spouse" pattern="\d{8}" placeholder="Optional">
+
+<label>Anniversary (DDMMYYYY)</label>
+<input type="text" name="anniversary" pattern="\d{8}" placeholder="Optional">
+
+<button type="submit">Check Strength</button>
+</form>
+
+{% if result %}
+<div class="result-box">
+{% if result.error %}
+<p><strong>Error:</strong> {{ result.error }}</p>
+{% else %}
+<p><strong>MPIN:</strong> <code>{{ result.pin }}</code></p>
+<p><strong>Strength:</strong>
+<span class="badge {{ 'strong' if result.status == 'STRONG' else 'weak' }}">{{ result.status }}</span>
+</p>
+{% if result.reasons %}
+<ul>
+{% for reason in result.reasons %}
+<li>{{ reason }}</li>
+{% endfor %}
+</ul>
+{% else %}
+<p>Your MPIN is strong and safe.</p>
+{% endif %}
+{% endif %}
+</div>
+{% endif %}
+
+</div>
+
+</body>
+</html>
